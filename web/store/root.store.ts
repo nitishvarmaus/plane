@@ -2,6 +2,7 @@ import { enableStaticRendering } from "mobx-react-lite";
 // root stores
 import { AppRootStore, IAppRootStore } from "./application";
 import { CycleStore, ICycleStore } from "./cycle.store";
+import { CycleFilterStore, ICycleFilterStore } from "./cycle_filter.store";
 import { DashboardStore, IDashboardStore } from "./dashboard.store";
 import { IEstimateStore, EstimateStore } from "./estimate.store";
 import { EventTrackerStore, IEventTrackerStore } from "./event-tracker.store";
@@ -12,14 +13,14 @@ import { ILabelStore, LabelStore } from "./label.store";
 import { IMemberRootStore, MemberRootStore } from "./member";
 import { IMentionStore, MentionStore } from "./mention.store";
 import { IModuleStore, ModulesStore } from "./module.store";
+import { IModuleFilterStore, ModuleFilterStore } from "./module_filter.store";
 import { IProjectRootStore, ProjectRootStore } from "./project";
+import { IProjectPageStore, ProjectPageStore } from "./project-page.store";
 import { IProjectViewStore, ProjectViewStore } from "./project-view.store";
 import { IStateStore, StateStore } from "./state.store";
 import { IUserRootStore, UserRootStore } from "./user";
+import { IUserInvitationStore, UserInvitationStore } from "./user/invitation.store";
 import { IWorkspaceRootStore, WorkspaceRootStore } from "./workspace";
-import { IProjectPageStore, ProjectPageStore } from "./project-page.store";
-import { CycleFilterStore, ICycleFilterStore } from "./cycle_filter.store";
-import { IModuleFilterStore, ModuleFilterStore } from "./module_filter.store";
 
 enableStaticRendering(typeof window === "undefined");
 
@@ -44,6 +45,7 @@ export class RootStore {
   mention: IMentionStore;
   dashboard: IDashboardStore;
   projectPages: IProjectPageStore;
+  userInvitations: IUserInvitationStore;
 
   constructor() {
     this.app = new AppRootStore(this);
@@ -67,6 +69,7 @@ export class RootStore {
     this.mention = new MentionStore(this);
     this.dashboard = new DashboardStore(this);
     this.projectPages = new ProjectPageStore(this);
+    this.userInvitations = new UserInvitationStore();
   }
 
   resetOnSignout() {
