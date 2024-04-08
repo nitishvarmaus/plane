@@ -1,5 +1,5 @@
 import { ReactElement } from "react";
-// import { AppProps } from "next/app";
+import { Metadata } from "next";
 import Head from "next/head";
 import { ThemeProvider } from "next-themes";
 // styles
@@ -16,17 +16,21 @@ import { StoreProvider } from "@/contexts/store-context";
 // types
 import { AppProvider } from "@/lib/app-provider";
 
+export const metadata: Metadata = {
+  title: SITE_TITLE,
+};
+
 const RootLayout = ({ children }: { children: ReactElement }) => (
   <>
-    <Head>
-      <title>{SITE_TITLE}</title>
-    </Head>
-    <StoreProvider>
-      {/* <ThemeProvider themes={THEMES} defaultTheme="system"> */}
-      {/* <AppProvider></AppProvider> */}
-      {children}
-      {/* </ThemeProvider> */}
-    </StoreProvider>
+    <html lang="en">
+      <body className={`antialiased`}>
+        <StoreProvider>
+          <ThemeProvider themes={THEMES} defaultTheme="system">
+            {children}
+          </ThemeProvider>
+        </StoreProvider>
+      </body>
+    </html>
   </>
 );
 

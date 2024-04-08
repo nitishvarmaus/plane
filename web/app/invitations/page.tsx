@@ -16,6 +16,8 @@ const UserInvitationsPage = () => {
   // fetching invitations data
   useSWR("USER_WORKSPACE_INVITATIONS", () => fetchWorkspaceInvitations());
 
+  console.log("currentUser", currentUser);
+
   return (
     <>
       <div className="flex h-full flex-col gap-y-2 overflow-hidden sm:flex-row sm:gap-y-0">
