@@ -22,6 +22,7 @@ jobs:
       gh_buildx_version: ${{ steps.set_env_variables.outputs.BUILDX_VERSION }}
       gh_buildx_platforms: ${{ steps.set_env_variables.outputs.BUILDX_PLATFORMS }}
       gh_buildx_endpoint: ${{ steps.set_env_variables.outputs.BUILDX_ENDPOINT }}
+      gh_build_deploy: ${{ steps.set_env_variables.outputs.BUILD_DEPLOY }}
       build_frontend: ${{ steps.changed_files.outputs.frontend_any_changed }}
       build_space: ${{ steps.changed_files.outputs.space_any_changed }}
       build_backend: ${{ steps.changed_files.outputs.backend_any_changed }}
@@ -42,6 +43,13 @@ jobs:
             echo "BUILDX_PLATFORMS=linux/amd64" >> $GITHUB_OUTPUT
             echo "BUILDX_ENDPOINT=" >> $GITHUB_OUTPUT
           fi
+
+          if [ "${{ env.TARGET_BRANCH }}" == "develop" ] || [ "${{ env.TARGET_BRANCH }}" == "preview" ]; then
+            echo "BUILD_DEPLOY=true" >> $GITHUB_OUTPUT
+          else
+            echo "BUILD_DEPLOY=false" >> $GITHUB_OUTPUT
+          fi
+
           echo "TARGET_BRANCH=${{ env.TARGET_BRANCH }}" >> $GITHUB_OUTPUT
 
       - id: checkout_files
@@ -279,3 +287,86 @@ jobs:
           DOCKER_BUILDKIT: 1
           DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  build-deploy-chart:
+    if: ${{ always() && (needs.branch_build_setup.outputs.gh_build_deploy == 'true') }}
+    needs: [branch_build_setup, branch_build_push_frontend, branch_build_push_space, branch_build_push_backend] 
+    name: Build Deploy Chart
+    runs-on: ubuntu-latest
+    env:
+      KUBE_CONFIG_FILE: ${{ secrets.FEATURE_PREVIEW_KUBE_CONFIG }}
+      PLANE_CE_CHART_URL: https://helm.plane.so
+      PLANE_CE_CHART_NAME: plane-ce
+      TARGET_BRANCH: ${{ needs.branch_build_setup.outputs.gh_branch_name }}
+    steps:
+      - name: Tailscale
+        uses: tailscale/github-action@v2
+        with:
+          oauth-client-id: ${{ secrets.TAILSCALE_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TAILSCALE_OAUTH_SECRET }}
+          tags: tag:ci
+      - name: Kubectl Setup
+        run: |
+          curl -LO "https://dl.k8s.io/release/${{ vars.FEATURE_PREVIEW_KUBE_VERSION }}/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+
+          mkdir -p ~/.kube
+          echo "$KUBE_CONFIG_FILE" > ~/.kube/config
+          chmod 600 ~/.kube/config
+      - name: HELM Setup
+        run: |
+          curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+          chmod 700 get_helm.sh
+          ./get_helm.sh
+      - name: App Deploy
+        run: |
+          if [ "${{ env.TARGET_BRANCH }}" == "develop" ]; then
+            APP_NAMESPACE="crew42"
+            APP_NAME="crew42-app"
+          elif [ "${{ env.TARGET_BRANCH }}" == "preview" ]; then
+            APP_NAMESPACE="takeoff"
+            APP_NAME="takeoff-app"
+          else
+            APP_NAMESPACE=""
+            APP_NAME=""
+          fi
+
+          # Check if APP_NAMESPACE and APP_NAME are set else exit
+          if [ -z "$APP_NAMESPACE" ] || [ -z "$APP_NAME" ]; then
+            echo "APP_NAMESPACE or APP_NAME is not set"
+            exit 1
+          fi
+
+          helm --kube-insecure-skip-tls-verify repo add makeplane ${{ env.PLANE_CE_CHART_URL }} 
+          helm repo update
+
+          METADATA=$(helm --kube-insecure-skip-tls-verify \
+                      upgrade --history-max=5 \
+                      --install=true \
+                      --namespace=${APP_NAMESPACE} \
+                      --timeout=10m0s \
+                      --wait=true ${APP_NAME} \
+                      --output json \
+                      makeplane/${{ env.PLANE_CE_CHART_NAME }} )
+            
+          DEPLOYMENT_STATUS=$(echo $METADATA | jq -r '.info.status')
+          DEPLOYMENT_DESCRIPTION=$(echo $METADATA | jq -r '.info.description')
+
+          if [ "$DEPLOYMENT_STATUS" == "deployed" ]; then
+            echo "Deployment Successful"
+          else
+            echo "Deployment Failed"
+            exit 1
+          fi
+
+          INGRESS_HOSTNAME=$(kubectl get ingress -n ${APP_NAMESPACE} --insecure-skip-tls-verify \
+              -o jsonpath='{.items[?(@.metadata.annotations.meta\.helm\.sh\/release-name=="'$APP_NAME'")]}' | \
+              jq -r '.spec.rules[0].host')
+
+          echo "**************************************************"
+          echo "APP NAMESPACE           ::: $APP_NAMESPACE"
+          echo "APP NAME                ::: $APP_NAME"
+          echo "DEPLOYMENT STATUS       ::: $DEPLOYMENT_STATUS"
+          echo "DEPLOYMENT DESCRIPTION  ::: $DEPLOYMENT_DESCRIPTION"
+          echo "INGRESS HOSTNAME        ::: $INGRESS_HOSTNAME"
+          echo "**************************************************"

@@ -208,7 +208,7 @@ function upgrade() {
 function viewSpecificLogs(){
     local SERVICE_NAME=$1
 
-    if docker-compose -f $DOCKER_FILE_PATH ps | grep -q "$SERVICE_NAME"; then
+    if docker compose -f $DOCKER_FILE_PATH ps | grep -q "$SERVICE_NAME"; then
         echo "Service '$SERVICE_NAME' is running."
     else
         echo "Service '$SERVICE_NAME' is not running."
