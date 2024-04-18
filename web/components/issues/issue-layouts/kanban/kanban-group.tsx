@@ -167,7 +167,7 @@ export const KanbanGroup = (props: IKanbanGroup) => {
       id={`${groupId}__${sub_group_id}`}
       className={cn(
         "relative h-full transition-all min-h-[50px]",
-        { "bg-custom-background-80": isDraggingOverColumn },
+        { "bg-custom-background-90": isDraggingOverColumn },
         { "vertical-scrollbar scrollbar-md": !sub_group_by }
       )}
       ref={columnRef}
@@ -187,7 +187,7 @@ export const KanbanGroup = (props: IKanbanGroup) => {
       />
 
       {enableQuickIssueCreate && !disableIssueCreation && (
-        <div className="w-full bg-custom-background-90 py-0.5 sticky bottom-0">
+        <div className="w-full py-0.5 sticky bottom-0 bg-custom-background-100">
           <KanBanQuickAddIssueForm
             formKey="name"
             groupId={groupId}

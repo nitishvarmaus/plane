@@ -44,7 +44,7 @@
     --color-primary-900: 13, 24, 51;
 
     --color-background-100: 255, 255, 255; /* primary bg */
-    --color-background-90: 247, 247, 247; /* secondary bg */
+    --color-background-90: 247, 247, 245; /* secondary bg */
     --color-background-80: 232, 232, 232; /* tertiary bg */
 
     --color-text-100: 23, 23, 23; /* primary text */
@@ -110,7 +110,7 @@
     color-scheme: light !important;
 
     --color-background-100: 255, 255, 255; /* primary bg */
-    --color-background-90: 247, 247, 247; /* secondary bg */
+    --color-background-90: 247, 247, 245; /* secondary bg */
     --color-background-80: 232, 232, 232; /* tertiary bg */
   }
 
@@ -189,8 +189,8 @@
   [data-theme="dark-contrast"] {
     color-scheme: dark !important;
 
-    --color-background-100: 25, 25, 25; /* primary bg */
-    --color-background-90: 32, 32, 32; /* secondary bg */
+    --color-background-100: 27, 27, 27; /* primary bg */
+    --color-background-90: 34, 34, 34; /* secondary bg */
     --color-background-80: 44, 44, 44; /* tertiary bg */
 
     --color-shadow-2xs: 0px 0px 1px 0px rgba(0, 0, 0, 0.15), 0px 1px 3px 0px rgba(0, 0, 0, 0.5);
