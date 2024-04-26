@@ -1,5 +1,8 @@
-// nivo
-import { ResponsiveScatterPlot, ScatterPlotSvgProps } from "@nivo/scatterplot";
+import { ScatterPlotSvgProps } from "@nivo/scatterplot";
+const ResponsiveScatterPlot = dynamic(() => import("@nivo/scatterplot").then((mod) => mod.ResponsiveScatterPlot), {
+  ssr: false,
+});
+import dynamic from "next/dynamic";
 // types
 import { CHARTS_THEME, DEFAULT_MARGIN } from "@/constants/graph";
 import { TGraph } from "./types";

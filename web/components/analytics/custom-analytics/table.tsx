@@ -1,5 +1,6 @@
 import { BarDatum } from "@nivo/bar";
-
+// import dynamic from "next/dynamic";
+// const BarDatum = dynamic(() => import("@nivo/bar").then((mod) => mod.), { ssr: false });
 // icons
 import { IAnalyticsParams, IAnalyticsResponse, TIssuePriorities } from "@plane/types";
 import { PriorityIcon } from "@plane/ui";
