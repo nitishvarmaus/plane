@@ -3,9 +3,8 @@ require("dotenv").config({ path: ".env" });
 const { withSentryConfig } = require("@sentry/nextjs");
 
 const nextConfig = {
-  experimental: {
-    esmExternals: 'loose',
-  },
+  // transpilePackages: ["@nivo/core"],
+  experimental: { esmExternals: true },
   reactStrictMode: false,
   swcMinify: true,
   output: "standalone",

@@ -1,6 +1,6 @@
-import { BarSvgProps } from "@nivo/bar";
-const ResponsiveBar = dynamic(() => import("@nivo/bar").then((mod) => mod.ResponsiveBar), { ssr: false });
-import dynamic from "next/dynamic";
+import { BarSvgProps, ResponsiveBar } from "@nivo/bar";
+// import dynamic from "next/dynamic";
+// const ResponsiveBar = dynamic(() => import("@nivo/bar").then((mod) => mod.ResponsiveBar), { ssr: false });
 // helpers
 import { CHARTS_THEME, DEFAULT_MARGIN } from "@/constants/graph";
 import { generateYAxisTickValues } from "@/helpers/graph.helper";

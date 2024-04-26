@@ -1,7 +1,5 @@
 // nivo
-import { PieSvgProps } from "@nivo/pie";
-import dynamic from "next/dynamic";
-const ResponsivePie = dynamic(() => import("@nivo/pie").then((mod) => mod.ResponsivePie), { ssr: false });
+import { PieSvgProps, ResponsivePie } from "@nivo/pie";
 // types
 import { CHARTS_THEME, DEFAULT_MARGIN } from "@/constants/graph";
 import { TGraph } from "./types";

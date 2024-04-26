@@ -1,6 +1,6 @@
-import { LineSvgProps } from "@nivo/line";
-const ResponsiveLine = dynamic(() => import("@nivo/line").then((mod) => mod.ResponsiveLine), { ssr: false });
-import dynamic from "next/dynamic";
+import { LineSvgProps, ResponsiveLine } from "@nivo/line";
+// const ResponsiveLine = dynamic(() => import("@nivo/line").then((mod) => mod.ResponsiveLine), { ssr: false });
+// import dynamic from "next/dynamic";
 // helpers
 import { CHARTS_THEME, DEFAULT_MARGIN } from "@/constants/graph";
 import { generateYAxisTickValues } from "@/helpers/graph.helper";
