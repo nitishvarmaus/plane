@@ -48,7 +48,7 @@ export type TUserProfile = {
     palette: string | undefined;
     primary: string | undefined;
     background: string | undefined;
-    darkPalette: string | undefined;
+    darkPalette: boolean | undefined;
     sidebarText: string | undefined;
     sidebarBackground: string | undefined;
   };

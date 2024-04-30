@@ -2,10 +2,7 @@ import { useEffect, useState, ReactElement } from "react";
 import { observer } from "mobx-react";
 import { useTheme } from "next-themes";
 // ui
-import {
-  Spinner,
-  // setPromiseToast
-} from "@plane/ui";
+import { Spinner, setPromiseToast } from "@plane/ui";
 // components
 import { CustomThemeSelector, ThemeSwitch, PageHead } from "@/components/core";
 // constants
@@ -23,7 +20,7 @@ const ProfilePreferencesThemePage: NextPageWithLayout = observer(() => {
   // store hooks
   const {
     data: currentUser,
-    profile: { data: userProfile },
+    profile: { data: userProfile, updateCurrentUserTheme },
   } = useUser();
   // computed
   const userTheme = userProfile?.theme;
@@ -41,24 +38,24 @@ const ProfilePreferencesThemePage: NextPageWithLayout = observer(() => {
 
   const handleThemeChange = (themeOption: I_THEME_OPTION) => {
     setTheme(themeOption.value);
-    // const updateCurrentUserThemePromise = updateCurrentUserTheme(themeOption.value);
+    const updateCurrentUserThemePromise = updateCurrentUserTheme(themeOption.value);
 
-    // setPromiseToast(updateCurrentUserThemePromise, {
-    //   loading: "Updating theme...",
-    //   success: {
-    //     title: "Success!",
-    //     message: () => "Theme updated successfully!",
-    //   },
-    //   error: {
-    //     title: "Error!",
-    //     message: () => "Failed to Update the theme",
-    //   },
-    // });
+    setPromiseToast(updateCurrentUserThemePromise, {
+      loading: "Updating theme...",
+      success: {
+        title: "Success!",
+        message: () => "Theme updated successfully!",
+      },
+      error: {
+        title: "Error!",
+        message: () => "Failed to Update the theme",
+      },
+    });
   };
 
   return (
     <>
-      <PageHead title="Profile - Theme Prefrence" />
+      <PageHead title="Profile - Theme Preference" />
       {currentUser ? (
         <div className="mx-auto mt-10 h-full w-full overflow-y-auto md:px-6 px-4 pb-8 md:mt-14 lg:px-20 vertical-scrollbar scrollbar-md">
           <div className="flex items-center border-b border-custom-border-100 pb-3.5">

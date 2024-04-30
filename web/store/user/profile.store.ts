@@ -1,8 +1,9 @@
+import set from "lodash/set";
 import { action, makeObservable, observable, runInAction } from "mobx";
-// services
-import { UserService } from "services/user.service";
 // types
 import { TUserProfile } from "@plane/types";
+// services
+import { UserService } from "@/services/user.service";
 
 type TError = {
   status: string;
@@ -19,6 +20,7 @@ export interface IProfileStore {
   updateUserProfile: (data: Partial<TUserProfile>) => Promise<void>;
   updateUserOnBoard: () => Promise<void>;
   updateTourCompleted: () => Promise<void>;
+  updateCurrentUserTheme: (theme: string) => Promise<void>;
 }
 
 export class ProfileStore implements IProfileStore {
@@ -68,6 +70,7 @@ export class ProfileStore implements IProfileStore {
       updateUserProfile: action,
       updateUserOnBoard: action,
       updateTourCompleted: action,
+      updateCurrentUserTheme: action,
     });
     // services
     this.userService = new UserService();
@@ -161,6 +164,28 @@ export class ProfileStore implements IProfileStore {
       }
     } catch (error) {
       this.fetchUserProfile();
+      throw error;
+    }
+  };
+
+  /**
+   * Updates the current user theme
+   * @param theme
+   * @returns Promise<void>
+   */
+  updateCurrentUserTheme = async (theme: string) => {
+    const originalTheme = this.data?.theme?.theme;
+    try {
+      set(this.data, "theme.theme", theme);
+      const response = await this.updateUserProfile({
+        theme: {
+          ...this.data?.theme,
+          theme,
+        },
+      });
+      return response;
+    } catch (error) {
+      set(this.data, "theme.theme", originalTheme);
       throw error;
     }
   };

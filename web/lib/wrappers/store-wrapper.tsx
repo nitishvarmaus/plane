@@ -43,11 +43,19 @@ const StoreWrapper: FC<TStoreWrapper> = observer((props) => {
     if (!userProfile) return;
     if (window) setDom(window.document?.querySelector<HTMLElement>("[data-theme='custom']") || undefined);
 
-    setTheme(userProfile?.theme?.theme || "system");
-    if (userProfile?.theme?.theme === "custom" && userProfile?.theme?.palette && dom)
-      applyTheme(userProfile?.theme?.palette, false);
-    else unsetCustomCssVariables();
-  }, [userProfile, setTheme, dom]);
+    const themeData = userProfile.theme;
+
+    console.log("userProfile", userProfile.theme.theme);
+
+    setTheme(themeData?.theme || "system");
+    if (themeData?.theme === "custom" && themeData?.palette && dom) {
+      console.log("Setting...");
+      applyTheme(themeData?.palette, false);
+    } else {
+      console.log("Unsetting...");
+      unsetCustomCssVariables();
+    }
+  }, [dom, setTheme, userProfile]);
 
   useEffect(() => {
     if (!router.query) return;

@@ -26,7 +26,7 @@ const inputRules = {
 
 export const CustomThemeSelector: React.FC = observer(() => {
   const {
-    profile: { data: userProfile },
+    profile: { data: userProfile, updateUserProfile },
   } = useUser();
 
   const userTheme: any = userProfile?.theme;
@@ -64,9 +64,9 @@ export const CustomThemeSelector: React.FC = observer(() => {
 
     setTheme("custom");
 
-    console.log(payload);
-
-    // return updateUserProfile({ theme: payload });
+    return updateUserProfile({
+      theme: payload,
+    });
   };
 
   const handleValueChange = (val: string | undefined, onChange: any) => {

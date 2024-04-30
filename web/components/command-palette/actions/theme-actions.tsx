@@ -1,11 +1,14 @@
-import React, { FC, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { Command } from "cmdk";
 import { observer } from "mobx-react";
 import { useTheme } from "next-themes";
-// icons
 import { Settings } from "lucide-react";
+// ui
+import { TOAST_TYPE, setToast } from "@plane/ui";
 // constants
 import { THEME_OPTIONS } from "@/constants/themes";
+// hooks
+import { useUserProfile } from "@/hooks/store";
 
 type Props = {
   closePalette: () => void;
@@ -15,18 +18,20 @@ export const CommandPaletteThemeActions: FC<Props> = observer((props) => {
   const { closePalette } = props;
   // states
   const [mounted, setMounted] = useState(false);
-  // hooks
+  // store hooks
+  const { updateCurrentUserTheme } = useUserProfile();
+  // next-themes
   const { setTheme } = useTheme();
 
   const updateUserTheme = async (newTheme: string) => {
     setTheme(newTheme);
 
-    // return updateUserProfile({ theme: newTheme }).catch(() => {
-    //   setToast({
-    //     type: TOAST_TYPE.ERROR,
-    //     title: "Failed to save user theme settings!",
-    //   });
-    // });
+    return updateCurrentUserTheme(newTheme).catch(() => {
+      setToast({
+        type: TOAST_TYPE.ERROR,
+        title: "Failed to save user theme settings!",
+      });
+    });
   };
 
   // useEffect only runs on the client, so now we can safely show the UI
