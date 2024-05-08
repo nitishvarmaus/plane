@@ -1,10 +1,4 @@
 import * as DOMPurify from "dompurify";
-import {
-  CYCLE_ISSUES_WITH_PARAMS,
-  MODULE_ISSUES_WITH_PARAMS,
-  PROJECT_ISSUES_LIST_WITH_PARAMS,
-  VIEW_ISSUES,
-} from "@/constants/fetch-keys";
 
 export const addSpaceIfCamelCase = (str: string) => {
   if (str === undefined || str === null) return "";
@@ -22,15 +16,6 @@ export const truncateText = (str: string, length: number) => {
   if (!str || str === "") return "";
 
   return str.length > length ? `${str.substring(0, length)}...` : str;
-};
-
-export const createSimilarString = (str: string) => {
-  const shuffled = str
-    .split("")
-    .sort(() => Math.random() - 0.5)
-    .join("");
-
-  return shuffled;
 };
 
 const fallbackCopyTextToClipboard = (text: string) => {
@@ -98,15 +83,6 @@ export const generateRandomColor = (string: string): string => {
   return randomColor;
 };
 
-export const getFirstCharacters = (str: string) => {
-  const words = str.trim().split(" ");
-  if (words.length === 1) {
-    return words[0].charAt(0);
-  } else {
-    return words[0].charAt(0) + words[1].charAt(0);
-  }
-};
-
 /**
  * @description: This function will remove all the HTML tags from the string
  * @param {string} html
@@ -159,29 +135,6 @@ export const objToQueryParams = (obj: any) => {
   }
 
   return params.toString();
-};
-
-export const getFetchKeysForIssueMutation = (options: {
-  cycleId?: string | string[];
-  moduleId?: string | string[];
-  viewId?: string | string[];
-  projectId: string;
-  viewGanttParams: any;
-  ganttParams: any;
-}) => {
-  const { cycleId, moduleId, viewId, projectId, viewGanttParams, ganttParams } = options;
-
-  const ganttFetchKey = cycleId
-    ? { ganttFetchKey: CYCLE_ISSUES_WITH_PARAMS(cycleId.toString(), ganttParams) }
-    : moduleId
-    ? { ganttFetchKey: MODULE_ISSUES_WITH_PARAMS(moduleId.toString(), ganttParams) }
-    : viewId
-    ? { ganttFetchKey: VIEW_ISSUES(viewId.toString(), viewGanttParams) }
-    : { ganttFetchKey: PROJECT_ISSUES_LIST_WITH_PARAMS(projectId?.toString() ?? "", ganttParams) };
-
-  return {
-    ...ganttFetchKey,
-  };
 };
 
 /**

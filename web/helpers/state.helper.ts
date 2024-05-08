@@ -1,6 +1,7 @@
 // types
-import { STATE_GROUPS } from "@/constants/state";
 import { IState, IStateResponse } from "@plane/types";
+// constants
+import { STATE_GROUPS } from "@/constants/state";
 
 export const orderStateGroups = (unorderedStateGroups: IStateResponse | undefined): IStateResponse | undefined => {
   if (!unorderedStateGroups) return undefined;
