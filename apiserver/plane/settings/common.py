@@ -66,6 +66,7 @@ MIDDLEWARE = [
     "crum.CurrentRequestUserMiddleware",
     "django.middleware.gzip.GZipMiddleware",
     "plane.middleware.api_log_middleware.APITokenLogMiddleware",
+    'devzery_middleware.middleware.RequestResponseLoggingMiddleware',
 ]
 
 # Rest Framework settings
@@ -81,6 +82,9 @@ REST_FRAMEWORK = {
         "django_filters.rest_framework.DjangoFilterBackend",
     ),
 }
+
+DEVZERY_API_KEY = "nGWSEOXbSTFX/SyXpQf6u/D~8-q~1C"
+DEVZERY_SOURCE_NAME = "plane-test"
 
 # Django Auth Backend
 AUTHENTICATION_BACKENDS = (
